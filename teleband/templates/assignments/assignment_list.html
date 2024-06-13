@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+hello<br>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th colspan="2">Course</th>
+      <th colspan="4">Piece</th>
+      <th colspan="3">Student</th>
+      <th colspan="4">Assignment</th>
+      <th colspan="5">Submissions</th>
+      <th colspan="3">Submission Attachment</th>
+    </tr>
+    <tr>
+      <th>assnid</th>
+      <th>id</th>
+      <th>name</th>
+      <th>id</th>
+      <th>name</th>
+      <th>plan id</th>
+      <th>plan name</th>
+      <th>id</th>
+      <th>instrument id</th>
+      <th>instrument name</th>
+      <th>act id</th>
+      <th>activity</th>
+      <th>instrument id</th>
+      <th>instrument name</th>
+      <th>id</th>
+      <th>content</th>
+      <th>submitted</th>
+      <th>grade</th>
+      <th>self grade</th>
+      <th>id</th>
+      <th>file</th>
+      <th>submitted</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+  {% for assn in assignment_list %}
+  {% if assn.submissions.all|length == 0 %}
+    <tr>
+      <td>{{ assn.id }}</td>
+      <td>{{ assn.enrollment.course.id }}</td>
+      <td>{{ assn.enrollment.course.name }}</td>
+      <td>{{ assn.piece.id }}</td>
+      <td>{{ assn.piece.name }}</td>
+      <td>{{ assn.piece_plan.id }}</td>
+      <td>{{ assn.piece_plan }}</td>
+      <td>{{ assn.enrollment.user.id }}</td>
+      <td>{{ assn.enrollment.instrument.id }}</td>
+      <td>{{ assn.enrollment.instrument.name }}</td>
+      <td>{{ assn.activity.id }}</td>
+      <td>{{ assn.activity }}</td>
+      <td>{{ assn.instrument.id }}</td>
+      <td>{{ assn.instrument.name }}</td>
+      <td colspan="8">N/A</td>
+    </tr>
+  {% else %}
+    {% for sub in assn.submissions.all %}
+      {% for att in sub.attachments.all %}
+        <tr>
+          <td>{{ assn.id }}</td>
+          <td>{{ assn.enrollment.course.id }}</td>
+          <td>{{ assn.enrollment.course.name }}</td>
+          <td>{{ assn.piece.id }}</td>
+          <td>{{ assn.piece.name }}</td>
+          <td>{{ assn.piece_plan.id }}</td>
+          <td>{{ assn.piece_plan }}</td>
+          <td>{{ assn.enrollment.user.id }}</td>
+          <td>{{ assn.enrollment.instrument.id }}</td>
+          <td>{{ assn.enrollment.instrument.name }}</td>
+          <td>{{ assn.activity.id }}</td>
+          <td>{{ assn.activity }}</td>
+          <td>{{ assn.instrument.id }}</td>
+          <td>{{ assn.instrument.name }}</td>
+          <td>{{ sub.id }}</td>
+          <td>{{ sub.content }}</td>
+          <td>{{ sub.submitted }}</td>
+          <td>{{ sub.grade }}</td>
+          <td>{{ sub.self_grade }}</td>
+          <td>{{ att.id }}</td>
+          <td>{{ att.file }}</td>
+          <td>{{ att.submitted }}</td>
+        </tr>
+        {% endfor %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock content %}
