@@ -11,3 +11,20 @@
   background-color: #f2dede;
   border-color: #eed3d7;
 }
+
+/* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/col#usage_notes */
+.dashboard colgroup {
+  border-inline-start: 2px solid black;
+}
+
+.dashboard td, .dashboard th {
+  border-inline-end: 1px dashed black;
+}
+
+.dashboard thead, .dashboard tbody{
+  border-block-end: 2px solid black;
+}
+
+.dashboard tr {
+  border-block-end: 1px dashed black;
+}

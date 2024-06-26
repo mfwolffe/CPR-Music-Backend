@@ -2,7 +2,30 @@
 
 {% block content %}
 hello<br>
-<table>
+{% comment %} https://developer.mozilla.org/en-US/docs/Web/HTML/Element/col#usage_notes {% endcomment %}
+<table class="dashboard">
+  <colgroup>
+    <col span="1" class="idnum">
+  </colgroup>
+  <colgroup>
+    <col span="2" class="course">
+  </colgroup>
+  <colgroup>
+    <col span="4" class="piece">
+  </colgroup>
+  <colgroup>
+    <col span="3" class="student">
+  </colgroup>
+  <colgroup>
+    <col span="4" class="assignment">
+  </colgroup>
+  <colgroup>
+    <col span="5" class="submissions">
+  </colgroup>
+  <colgroup>
+    <col span="3" class="attachments">
+  </colgroup>
+  <colgroup>
   <thead>
     <tr>
       <th>ID</th>
@@ -38,9 +61,9 @@ hello<br>
       <th>submitted</th>
     </tr>
   </thead>
-  <tbody>
     
   {% for assn in assignment_list %}
+  <tbody>
   {% if assn.submissions.all|length == 0 %}
     <tr>
       <td>{{ assn.id }}</td>
@@ -89,7 +112,7 @@ hello<br>
         {% endfor %}
       {% endfor %}
     {% endif %}
+    </tbody>
   {% endfor %}
-  </tbody>
 </table>
 {% endblock content %}

@@ -15,11 +15,17 @@ class AssignmentListView(UserPassesTestMixin, generic.ListView):
     def get_queryset(self) -> QuerySet[Any]:
         results = Assignment.objects.prefetch_related(
             "piece",
+            "piece_plan",
+            "enrollment",
+            "enrollment__user",
+            "enrollment__course",
+            "enrollment__instrument",
             "enrollment__course__owner",
             "instrument",
             "submissions__attachments",
             "submissions__grade",
             "submissions__self_grade",
+            "activity",
         ).all()
         return results
 
