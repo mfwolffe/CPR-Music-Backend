@@ -11,6 +11,9 @@ from teleband.submissions.api.views import GradeViewSet, SubmissionViewSet, Atta
 from teleband.musics.api.views import PieceViewSet
 from teleband.instruments.api.views import InstrumentViewSet
 
+# Matt imports
+from teleband.daw.api.views import SongViewSet
+
 if settings.DEBUG:
     router = DefaultRouter()
     nested_cls = routers.NestedDefaultRouter
@@ -24,6 +27,9 @@ router.register("courses", CourseViewSet)
 router.register("pieces", PieceViewSet)
 router.register("piece-plans", PiecePlanViewSet)
 router.register("instruments", InstrumentViewSet)
+
+# Matt routes
+router.register("daw", SongViewSet)
 
 courses_router = nested_cls(router, "courses", lookup="course_slug")
 courses_router.register("assignments", AssignmentViewSet)  # option basename omitted

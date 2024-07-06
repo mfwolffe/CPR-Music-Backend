@@ -1,3 +1,9 @@
+from .models import Song
 from django.contrib import admin
+from reversion.admin import VersionAdmin
 
-# Register your models here.
+
+@admin.register(Song)
+class SongAdmin(VersionAdmin):
+  list_display = ("id", "title", "artist", "performer", "audio_file",)
+  search_fields = ("title",)
