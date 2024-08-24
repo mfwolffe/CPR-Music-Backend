@@ -8,6 +8,9 @@ from teleband.assignments.models import Assignment
 from teleband.courses.models import Course
 from django.contrib.auth.mixins import UserPassesTestMixin
 
+import csv
+from django.http import HttpResponse
+
 
 class AssignmentListView(UserPassesTestMixin, generic.ListView):
     model = Assignment
@@ -42,3 +45,39 @@ class CourseListView(UserPassesTestMixin, generic.ListView):
 
     def test_func(self):
         return self.request.user.is_superuser
+
+
+def csv_view(request):
+    """Function which generates a CSV file for download"""
+    # select related returns a queryset that will follow foreign-key relationships. This
+    # is a performance booster which results in a single more complex query but won't require
+    # database queries
+    assignments = Assignment.objects.select_related(
+            "piece",
+            "piece_plan",
+            "enrollment",
+            "enrollment__user",
+            "enrollment__course",
+            "enrollment__instrument",
+            "enrollment__course__owner",
+            "instrument",
+            "activity",
+        ).all()
+
+    # Create the HttpResponse object with the appropriate CSV header
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="assignment.csv"'}
+    )
+
+    writer = csv.writer(response)
+    writer.writerow(["ID", "Course ID", "Course Name", "Piece ID", "Piece Name", "Piece Plan ID", "Piece Plan Name",
+                     "Student ID", "Student Instrument ID", "Student Instrument Name", "Assignment Activity ID",
+                     "Assignment Activity", "Assignment Instrument ID", "Assignment Instrument Name", "Submissions"])
+    for assn in assignments:
+        writer.writerow([assn.id, assn.enrollment.course.id, assn.enrollment.course.name, assn.piece.id, 
+                         assn.piece.name, assn.piece_plan.id, assn.piece_plan, assn.enrollment.user.id, 
+                         assn.enrollment.instrument.id, assn.enrollment.instrument.name, assn.activity.id,
+                         assn.activity, assn.instrument.id, assn.instrument.name, "N/A"])
+        
+    return response

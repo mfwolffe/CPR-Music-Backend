@@ -17,11 +17,13 @@
   border-inline-start: 2px solid black;
 }
 
-.dashboard td, .dashboard th {
+.dashboard td,
+.dashboard th {
   border-inline-end: 1px dashed black;
 }
 
-.dashboard thead, .dashboard tbody{
+.dashboard thead,
+.dashboard tbody {
   border-block-end: 2px solid black;
 }
 
