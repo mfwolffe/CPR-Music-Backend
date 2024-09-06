@@ -73,11 +73,29 @@ def csv_view(request):
     writer = csv.writer(response)
     writer.writerow(["ID", "Course ID", "Course Name", "Piece ID", "Piece Name", "Piece Plan ID", "Piece Plan Name",
                      "Student ID", "Student Instrument ID", "Student Instrument Name", "Assignment Activity ID",
-                     "Assignment Activity", "Assignment Instrument ID", "Assignment Instrument Name", "Submissions"])
+                     "Assignment Activity", "Assignment Instrument ID", "Assignment Instrument Name", "Submissions ID",
+                     "Submissions Content", "Submissions submitted", "Submissions grade", "Submissions Self Grade",
+                     "Submission Attatchnment ID", "Submission Attachment File", "Submission Attachment Submitted"])
     for assn in assignments:
-        writer.writerow([assn.id, assn.enrollment.course.id, assn.enrollment.course.name, assn.piece.id, 
-                         assn.piece.name, assn.piece_plan.id, assn.piece_plan, assn.enrollment.user.id, 
-                         assn.enrollment.instrument.id, assn.enrollment.instrument.name, assn.activity.id,
-                         assn.activity, assn.instrument.id, assn.instrument.name, "N/A"])
+        if len(assn.submissions.all()) == 0:
         
+            writer.writerow([assn.id, assn.enrollment.course.id, assn.enrollment.course.name, assn.piece.id, 
+                            assn.piece.name, assn.piece_plan.id, assn.piece_plan, assn.enrollment.user.id, 
+                            assn.enrollment.instrument.id, assn.enrollment.instrument.name, assn.activity.id,
+                            assn.activity, assn.instrument.id, assn.instrument.name, "N/A", "N/A", "N/A",
+                            "N/A", "N/A", "N/A", "N/A", "N/A"])
+        else:
+            for sub in assn.submissions.all():
+                for att in sub.attachments.all():
+                    csv_val = [assn.id, assn.enrollment.course.id, assn.enrollment.course.name, assn.piece.id, 
+                               assn.piece.name, assn.piece_plan.id, assn.piece_plan, assn.enrollment.user.id, 
+                               assn.enrollment.instrument.id, assn.enrollment.instrument.name, assn.activity.id,
+                               assn.activity, assn.instrument.id, assn.instrument.name, sub.id]
+                    if assn.activity.category == "Create":
+                        csv_val.append("Create, see below")
+                    else:
+                        csv_val.append(sub.content)
+                    csv_val.extend([sub.submitted, sub.grade, sub.self_grade, att.id, att.file, att.submitted])
+                    
+                    writer.writerow(csv_val)
     return response

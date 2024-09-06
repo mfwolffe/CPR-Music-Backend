@@ -123,7 +123,10 @@
     {% if assn.activity.category == 'Create' %}
     <tr>
       <td colspan="22">
-        <div class="" id="flat-{{sub.id}}"></div>
+        <div class="" id="flat-{{sub.id}}">
+          <div class="score"></div>
+          <div class="png"></div>
+        </div>
         <script>
           compositions.push({{ sub.content | safe }})
           containers.push(document.getElementById('flat-{{sub.id}}'))
@@ -143,7 +146,7 @@
 <script src="https://prod.flat-cdn.com/embed-js/v2.3.0/embed.min.js"></script>
 <script>
   for (let i = 0; i < compositions.length; i++) {
-    let embed = new Flat.Embed(containers[i], {
+    let embed = new Flat.Embed(containers[i].getElementsByClassName("score")[0], {
       score: 'blank',
       embedParams: {
         appId: '60a51c906bcde01fc75a3ad0',
@@ -159,7 +162,22 @@
         toolsetId: '64be80de738efff96cc27edd',
       },
     });
-    embed.loadJSON(compositions[i]);
+    embed.loadJSON(compositions[i]).then(() => {
+      embed.getPNG({
+        result: "dataURL"
+      })
+        .then(function (png) {
+          console.log("png")
+          console.log(png)
+          const scoreimg = document.createElement("a")
+          scoreimg.href = png
+          scoreimg.download = `${containers[i].id}-composition.png`
+          containers[i].getElementsByClassName("png")[0].append(scoreimg)
+          scoreimg.click()
+
+        })
+    });
+
   }
 </script>
 {% endblock custom_javascript %}
