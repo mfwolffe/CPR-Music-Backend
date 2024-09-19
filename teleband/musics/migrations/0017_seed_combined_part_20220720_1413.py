@@ -73,15 +73,11 @@ def update_site_forward(apps, schema_editor):
     for part in data["parts"]:
         create_part_et_al(apps, part, piece)
 
-    
-
-
-
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('musics', '0016_seed_pieces_later'),
+        ("musics", "0016_seed_pieces_later"),
     ]
 
     operations = [migrations.RunPython(update_site_forward, migrations.RunPython.noop)]

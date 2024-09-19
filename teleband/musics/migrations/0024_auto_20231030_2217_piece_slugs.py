@@ -11,10 +11,11 @@ def update_site_forward(apps, schema_editor):
         generate_slug_from_name(piece, Piece)
         piece.save()
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('musics', '0023_seedchord_scale_patterns_20231019_1228'),
+        ("musics", "0023_seedchord_scale_patterns_20231019_1228"),
     ]
 
     operations = [migrations.RunPython(update_site_forward, migrations.RunPython.noop)]

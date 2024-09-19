@@ -10,4 +10,6 @@ class Migration(migrations.Migration):
         ("instruments", "0003_data_migration_seed_instruments"),
     ]
 
-    operations = [migrations.RunPython(migrations.RunPython.noop, migrations.RunPython.noop)]
+    operations = [
+        migrations.RunPython(migrations.RunPython.noop, migrations.RunPython.noop)
+    ]

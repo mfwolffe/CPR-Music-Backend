@@ -8,6 +8,7 @@ class EnrollmentInline(admin.TabularInline):
     model = Enrollment
     extra = 0
 
+
 @admin.register(Course)
 class CourseAdmin(VersionAdmin):
     list_display = ("id", "name", "slug", "owner")

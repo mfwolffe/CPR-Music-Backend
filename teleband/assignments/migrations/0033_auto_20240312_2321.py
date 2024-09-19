@@ -18,10 +18,11 @@ NEA_CREATE_DEMO_PIECES = [
     "Freedom 2040 (Orchestra)",
     "Down by the Riverside",
     "Deep River",
-    "I Want to be Ready"
+    "I Want to be Ready",
 ]
 
-NEA_CONDITIONS = ['Aural', 'Theoretical', 'Exploratory']
+NEA_CONDITIONS = ["Aural", "Theoretical", "Exploratory"]
+
 
 def add_demos(apps, schema_editor):
     Course = apps.get_model("courses", "Course")
@@ -32,7 +33,7 @@ def add_demos(apps, schema_editor):
     Role = apps.get_model("users", "Role")
     User = apps.get_model("users", "User")
 
-    owner=User.objects.get(username=DEMO_USERS[0])
+    owner = User.objects.get(username=DEMO_USERS[0])
     student_role = Role.objects.get(name="Student")
 
     for condition in NEA_CONDITIONS:
@@ -60,9 +61,9 @@ def add_demos(apps, schema_editor):
                 print(f"IntegrityError: {e}")
 
         for piece_name in NEA_CREATE_DEMO_PIECES:
-            if piece_name=="I Want to be Ready" and condition != 'Aural':
+            if piece_name == "I Want to be Ready" and condition != "Aural":
                 pass
-            
+
             piece = Piece.objects.get(name=piece_name)
             piece_plan, p_created = PiecePlan.objects.update_or_create(
                 name=f"NEA-{piece.name}-{condition}",
@@ -77,10 +78,10 @@ def add_demos(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0032_auto_20240311_1235'),
-        ('users', '0007_user_instrument'),
-        ('courses', '0006_course_can_edit_instruments'),
-        ('instruments', '0004_instrument_midi_program_number'),
+        ("assignments", "0032_auto_20240311_1235"),
+        ("users", "0007_user_instrument"),
+        ("courses", "0006_course_can_edit_instruments"),
+        ("instruments", "0004_instrument_midi_program_number"),
     ]
 
     operations = [

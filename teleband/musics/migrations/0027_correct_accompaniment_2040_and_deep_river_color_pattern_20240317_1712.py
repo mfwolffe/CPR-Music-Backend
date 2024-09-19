@@ -2,10 +2,15 @@
 
 from django.db import migrations
 
+
 def update_site_forward(apps, schema_editor):
     Piece = apps.get_model("musics", "Piece")
-    orc_2040, orc_2040_created = Piece.objects.get_or_create(name="Freedom 2040 (Orchestra)")
-    orc_2040.accompaniment = "accompaniments/Freedom_2040_-Orchestra-_-Accompaniment_F_.mp3"
+    orc_2040, orc_2040_created = Piece.objects.get_or_create(
+        name="Freedom 2040 (Orchestra)"
+    )
+    orc_2040.accompaniment = (
+        "accompaniments/Freedom_2040_-Orchestra-_-Accompaniment_F_.mp3"
+    )
     orc_2040.save()
 
     Part = apps.get_model("musics", "Part")
@@ -13,14 +18,17 @@ def update_site_forward(apps, schema_editor):
     deep_river, deep_river_created = Piece.objects.get_or_create(name="Deep River")
     melody, melody_created = PartType.objects.get_or_create(name="Melody")
 
-    dr_melody, dr_melody_created = Part.objects.get_or_create(piece=deep_river, part_type=melody)
+    dr_melody, dr_melody_created = Part.objects.get_or_create(
+        piece=deep_river, part_type=melody
+    )
     deep_river_corrected = '["tonic", "subdominant", "tonic", "dominant", "tonic", "subdominant", "dominant", "tonic"]'
     dr_melody.chord_scale_pattern = deep_river_corrected
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('musics', '0026_fix_deep_river_20240315_1420'),
+        ("musics", "0026_fix_deep_river_20240315_1420"),
     ]
 
     operations = [migrations.RunPython(update_site_forward, migrations.RunPython.noop)]

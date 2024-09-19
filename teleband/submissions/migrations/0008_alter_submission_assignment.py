@@ -7,14 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0021_auto_20230517_1130'),
-        ('submissions', '0007_auto_20220501_1627'),
+        ("assignments", "0021_auto_20230517_1130"),
+        ("submissions", "0007_auto_20220501_1627"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='submission',
-            name='assignment',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='submissions', to='assignments.assignment'),
+            model_name="submission",
+            name="assignment",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="submissions",
+                to="assignments.assignment",
+            ),
         ),
     ]

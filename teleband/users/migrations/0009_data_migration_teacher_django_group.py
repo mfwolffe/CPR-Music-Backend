@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 def add_demo_to_group(apps, schema_editor):
     User = apps.get_model("users", "User")
     demodave = User.objects.filter(username="demodave").first()
@@ -19,7 +20,7 @@ def add_demo_to_group(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0008_user_external_id'),
+        ("users", "0008_user_external_id"),
     ]
 
     operations = [migrations.RunPython(add_demo_to_group, migrations.RunPython.noop)]

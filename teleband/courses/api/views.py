@@ -33,7 +33,13 @@ from teleband.assignments.api.serializers import AssignmentSerializer
 from teleband.users.api.serializers import UserSerializer
 
 from teleband.courses.models import Enrollment, Course
-from teleband.assignments.models import Assignment, Activity, PiecePlan, Curriculum, AssignmentGroup
+from teleband.assignments.models import (
+    Assignment,
+    Activity,
+    PiecePlan,
+    Curriculum,
+    AssignmentGroup,
+)
 from teleband.musics.models import PartType, Piece, Part
 from teleband.users.models import Role
 from teleband.utils.permissions import IsTeacher
@@ -252,7 +258,9 @@ class CourseViewSet(
                 piece_plan = PiecePlan.objects.get(pk=parsed["piece_plan_id"])
             except PiecePlan.DoesNotExist:
                 logger.info(
-                    "Attempt to assign non-existent piece plan {}".format(parsed["piece_plan_id"])
+                    "Attempt to assign non-existent piece plan {}".format(
+                        parsed["piece_plan_id"]
+                    )
                 )
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -288,7 +296,6 @@ class CourseViewSet(
                 assignments, many=True, context={"request": request}
             )
             return Response(status=status.HTTP_200_OK, data=serializer.data)
-
 
     @action(detail=True, methods=["post"])
     def assign(self, request, **kwargs):
@@ -345,7 +352,9 @@ class CourseViewSet(
             curriculum = Curriculum.objects.get(pk=parsed["curriculum_id"])
         except Curriculum.DoesNotExist:
             logger.info(
-                "Attempt to assign non-existent curriculum {}".format(parsed["curriculum_id"])
+                "Attempt to assign non-existent curriculum {}".format(
+                    parsed["curriculum_id"]
+                )
             )
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -373,7 +382,6 @@ class CourseViewSet(
             assignments, many=True, context={"request": request}
         )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
-
 
     @action(detail=True, methods=["post"])
     def unassign(self, request, **kwargs):
@@ -422,24 +430,24 @@ class CourseViewSet(
         if piece_id is None:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
-                data={"error": "Piece Id missing from PATCH request"}
+                data={"error": "Piece Id missing from PATCH request"},
             )
 
         instrument_id = request.data.get("instrument_id")
         if instrument_id is None:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
-                data={"error": "Instrument ID missing from PATCH request"}
+                data={"error": "Instrument ID missing from PATCH request"},
             )
 
         course = self.get_object()
         if not course.can_edit_instruments:
             return Response(
                 status=status.HTTP_403_FORBIDDEN,
-                data={"error": "No permission to change instrument"}
+                data={"error": "No permission to change instrument"},
             )
 
-        instrument = Instrument.objects.get(pk=instrument_id);
+        instrument = Instrument.objects.get(pk=instrument_id)
         piece = Piece.objects.get(pk=piece_id)
 
         assignments = Assignment.objects.filter(piece=piece, enrollment__course=course)

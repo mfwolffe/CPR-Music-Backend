@@ -16,7 +16,7 @@ def update_site_forward(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('musics', '0012_piece_slug'),
+        ("musics", "0012_piece_slug"),
     ]
 
     operations = [migrations.RunPython(update_site_forward, migrations.RunPython.noop)]

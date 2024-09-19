@@ -2,39 +2,34 @@
 
 from django.db import migrations
 
+
 def update_site_forward(apps, schema_editor):
     Activity = apps.get_model("assignments", "Activity")
     ActivityType = apps.get_model("assignments", "ActivityType")
     ActivityCategory = apps.get_model("assignments", "ActivityCategory")
 
-    ActivityCategory.objects.update_or_create(
-        name="Connect Benjamin"
-    )
+    ActivityCategory.objects.update_or_create(name="Connect Benjamin")
 
-    ActivityCategory.objects.update_or_create(
-        name="Connect Danyew"
-    )
+    ActivityCategory.objects.update_or_create(name="Connect Danyew")
 
-    ActivityCategory.objects.update_or_create(
-        name="Connect Green"
-    )
+    ActivityCategory.objects.update_or_create(name="Connect Green")
 
     ActivityType.objects.update_or_create(
         name="Connect Benjamin",
-        category = ActivityCategory.objects.get(name="Connect Benjamin"), 
+        category=ActivityCategory.objects.get(name="Connect Benjamin"),
     )
     ActivityType.objects.update_or_create(
         name="Connect Danyew",
-        category = ActivityCategory.objects.get(name="Connect Danyew"), 
+        category=ActivityCategory.objects.get(name="Connect Danyew"),
     )
     ActivityType.objects.update_or_create(
         name="Connect Green",
-        category = ActivityCategory.objects.get(name="Connect Green"), 
+        category=ActivityCategory.objects.get(name="Connect Green"),
     )
 
     Activity.objects.update_or_create(
         activity_type=ActivityType.objects.get(name="Connect Benjamin"),
-        body="INSTRUCTIONS: 1) Watch the Video. 2) Based on Mr. Benjamin's suggestions in the video, write about a specific executive skill you changed or modified in order to perform \"The Favorite.\"",
+        body='INSTRUCTIONS: 1) Watch the Video. 2) Based on Mr. Benjamin\'s suggestions in the video, write about a specific executive skill you changed or modified in order to perform "The Favorite."',
     )
 
     Activity.objects.update_or_create(
@@ -51,7 +46,7 @@ def update_site_forward(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0018_assign_part_type_to_assignment_20220617_2211'),
+        ("assignments", "0018_assign_part_type_to_assignment_20220617_2211"),
     ]
 
     operations = [migrations.RunPython(update_site_forward, migrations.RunPython.noop)]

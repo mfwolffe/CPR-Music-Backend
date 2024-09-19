@@ -7,13 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0022_move_number_of_submissions'),
+        ("assignments", "0022_move_number_of_submissions"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='assignment',
-            name='piece_plan',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='assignments.pieceplan'),
+            model_name="assignment",
+            name="piece_plan",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="assignments.pieceplan",
+            ),
         ),
     ]

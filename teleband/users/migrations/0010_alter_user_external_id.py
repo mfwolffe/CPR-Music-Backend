@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0009_data_migration_teacher_django_group'),
+        ("users", "0009_data_migration_teacher_django_group"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='external_id',
-            field=models.CharField(blank=True, help_text="Any string that is meaningful to the user's educational institution.", max_length=255, verbose_name='External ID'),
+            model_name="user",
+            name="external_id",
+            field=models.CharField(
+                blank=True,
+                help_text="Any string that is meaningful to the user's educational institution.",
+                max_length=255,
+                verbose_name="External ID",
+            ),
         ),
     ]

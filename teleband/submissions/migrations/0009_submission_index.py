@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submissions', '0008_alter_submission_assignment'),
+        ("submissions", "0008_alter_submission_assignment"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='submission',
-            name='index',
+            model_name="submission",
+            name="index",
             field=models.PositiveIntegerField(default=0),
         ),
     ]

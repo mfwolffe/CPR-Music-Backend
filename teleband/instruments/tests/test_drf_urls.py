@@ -11,7 +11,10 @@ def test_instrument_detail(instrument: Instrument):
         reverse("api:instrument-detail", kwargs={"id": instrument.id})
         == f"/api/instruments/{instrument.id}/"
     )
-    assert resolve(f"/api/instruments/{instrument.id}/").view_name == "api:instrument-detail"
+    assert (
+        resolve(f"/api/instruments/{instrument.id}/").view_name
+        == "api:instrument-detail"
+    )
 
 
 def test_instrument_list():
