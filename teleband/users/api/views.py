@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.utils.timezone import now
 
 from rest_framework import permissions
 from rest_framework import status
@@ -123,6 +124,20 @@ class ObtainDeleteAuthToken(ObtainAuthToken):
             return Response(status=status.HTTP_200_OK)
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+    # with thanks to https://chatgpt.com/share/66ee4879-8d84-800f-b18c-7d63efbb2c43
+    def post(self, request, *args, **kwargs):
+        # Call the original implementation to get the authenticated user and token
+        response = super().post(request, *args, **kwargs)
+        token = Token.objects.get(key=response.data["token"])
+        user = token.user
+
+        # Update last_login and save the user instance
+        user.last_login = now()
+        user.save()
+
+        # Return the response with the token and any additional data
+        return response
 
 
 obtain_delete_auth_token = ObtainDeleteAuthToken.as_view()
