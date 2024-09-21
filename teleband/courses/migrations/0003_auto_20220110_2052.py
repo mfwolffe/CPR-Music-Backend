@@ -5,6 +5,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 from zoneinfo import ZoneInfo
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -17,7 +18,9 @@ class Migration(migrations.Migration):
             model_name="course",
             name="end_date",
             field=models.DateField(
-                default=datetime.datetime(2022, 1, 11, 1, 52, 38, 716619, tzinfo=ZoneInfo("UTC"))
+                default=datetime.datetime(
+                    2022, 1, 11, 1, 52, 38, 716619, tzinfo=ZoneInfo("UTC")
+                )
             ),
             preserve_default=False,
         ),
@@ -25,7 +28,9 @@ class Migration(migrations.Migration):
             model_name="course",
             name="start_date",
             field=models.DateField(
-                default=datetime.datetime(2022, 1, 11, 1, 52, 44, 131728, tzinfo=ZoneInfo("UTC"))
+                default=datetime.datetime(
+                    2022, 1, 11, 1, 52, 44, 131728, tzinfo=ZoneInfo("UTC")
+                )
             ),
             preserve_default=False,
         ),

@@ -2,9 +2,10 @@
 
 from django.db import migrations, models
 
+
 def initial_instrument_program_numbers(apps, schema_editor):
     INSTRUMENT_PNS = {
-        "Viola":  42,
+        "Viola": 42,
         "Baritone TC": 58,
         "Bass Clarinet": 72,
         "Bb Clarinet": 72,
@@ -13,18 +14,18 @@ def initial_instrument_program_numbers(apps, schema_editor):
         "Bb Tenor Saxophone": 67,
         "Bb Trumpet": 57,
         "Bassoon": 71,
-        "Cello":  43,
+        "Cello": 43,
         "Euphonium BC": 58,
         "Trombone": 58,
-        "Bass":  33,
+        "Bass": 33,
         "Bass Trombone": 58,
         "Contrabassoon": 71,
         "String Bass": 33,
-        "Tuba":  59,
-        "Oboe":  69,
+        "Tuba": 59,
+        "Oboe": 69,
         "Percussion": 13,
-        "Piano":  1,
-        "Flute":  74,
+        "Piano": 1,
+        "Flute": 74,
         "Piccolo": 73,
         "Violin": 41,
         "Contrabass Clarinet": 72,
@@ -42,17 +43,20 @@ def initial_instrument_program_numbers(apps, schema_editor):
         instrument.midi_program_number = program_number
         instrument.save()
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('instruments', '0003_data_migration_seed_instruments'),
+        ("instruments", "0003_data_migration_seed_instruments"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='instrument',
-            name='midi_program_number',
+            model_name="instrument",
+            name="midi_program_number",
             field=models.PositiveSmallIntegerField(blank=True, null=True),
         ),
-        migrations.RunPython(initial_instrument_program_numbers, migrations.RunPython.noop)
+        migrations.RunPython(
+            initial_instrument_program_numbers, migrations.RunPython.noop
+        ),
     ]

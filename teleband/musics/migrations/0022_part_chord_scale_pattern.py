@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('musics', '0021_auto_20230920_add_sample_audio'),
+        ("musics", "0021_auto_20230920_add_sample_audio"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='part',
-            name='chord_scale_pattern',
+            model_name="part",
+            name="chord_scale_pattern",
             field=models.JSONField(blank=True, null=True),
         ),
     ]

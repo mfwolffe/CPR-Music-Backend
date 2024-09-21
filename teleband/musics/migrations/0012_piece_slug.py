@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('musics', '0011_seed_piece_parts_parttranspositions'),
+        ("musics", "0011_seed_piece_parts_parttranspositions"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='piece',
-            name='slug',
+            model_name="piece",
+            name="slug",
             field=models.SlugField(null=True),
         ),
     ]

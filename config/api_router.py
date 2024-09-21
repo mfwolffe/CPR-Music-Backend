@@ -6,8 +6,17 @@ from rest_framework_nested import routers
 
 from teleband.users.api.views import UserViewSet
 from teleband.courses.api.views import EnrollmentViewSet, CourseViewSet
-from teleband.assignments.api.views import AssignmentViewSet, ActivityViewSet, PiecePlanViewSet
-from teleband.submissions.api.views import GradeViewSet, SubmissionViewSet, AttachmentViewSet, TeacherSubmissionViewSet
+from teleband.assignments.api.views import (
+    AssignmentViewSet,
+    ActivityViewSet,
+    PiecePlanViewSet,
+)
+from teleband.submissions.api.views import (
+    GradeViewSet,
+    SubmissionViewSet,
+    AttachmentViewSet,
+    TeacherSubmissionViewSet,
+)
 from teleband.musics.api.views import PieceViewSet
 from teleband.instruments.api.views import InstrumentViewSet
 
@@ -28,7 +37,9 @@ router.register("instruments", InstrumentViewSet)
 courses_router = nested_cls(router, "courses", lookup="course_slug")
 courses_router.register("assignments", AssignmentViewSet)  # option basename omitted
 courses_router.register("activities", ActivityViewSet)  # option basename omitted
-courses_router.register("submissions", TeacherSubmissionViewSet)  # option basename omitted
+courses_router.register(
+    "submissions", TeacherSubmissionViewSet
+)  # option basename omitted
 courses_router.register("grades", GradeViewSet)  # option basename omitted
 courses_router.register("piece-plans", PiecePlanViewSet)
 

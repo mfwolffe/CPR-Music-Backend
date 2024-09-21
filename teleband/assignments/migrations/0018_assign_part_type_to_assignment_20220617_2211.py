@@ -9,18 +9,22 @@ def assign_part_type(apps, schema_editor):
     ActivityType = apps.get_model("assignments", "ActivityType")
     PartType = apps.get_model("musics", "PartType")
     combined_part_type = PartType.objects.get(name="Combined")
-    record = Activity.objects.get(activity_type=ActivityType.objects.get(name="Creativity"),)
-    record.part_type=combined_part_type
+    record = Activity.objects.get(
+        activity_type=ActivityType.objects.get(name="Creativity"),
+    )
+    record.part_type = combined_part_type
     record.save()
-    record = Activity.objects.get(activity_type=ActivityType.objects.get(name="Reflection"),)
-    record.part_type=combined_part_type
+    record = Activity.objects.get(
+        activity_type=ActivityType.objects.get(name="Reflection"),
+    )
+    record.part_type = combined_part_type
     record.save()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0017_seed_more_activities'),
+        ("assignments", "0017_seed_more_activities"),
     ]
 
     operations = [migrations.RunPython(assign_part_type, migrations.RunPython.noop)]

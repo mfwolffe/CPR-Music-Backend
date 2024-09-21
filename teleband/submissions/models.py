@@ -31,7 +31,9 @@ class Submission(models.Model):
         null=True,
         related_name="own_submission",
     )
-    assignment = models.ForeignKey(Assignment, on_delete=models.PROTECT, related_name="submissions")
+    assignment = models.ForeignKey(
+        Assignment, on_delete=models.PROTECT, related_name="submissions"
+    )
     index = models.PositiveIntegerField(default=0)
     submitted = models.DateTimeField(auto_now_add=True)
     content = models.TextField(blank=True)

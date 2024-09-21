@@ -16,6 +16,7 @@ class EnrollmentInline(admin.TabularInline):
     model = Enrollment
     extra = 0
 
+
 @admin.register(User)
 class UserAdmin(auth_admin.UserAdmin):
 

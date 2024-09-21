@@ -6,17 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0021_auto_20230517_1130'),
+        ("assignments", "0021_auto_20230517_1130"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='activitytype',
-            name='number_of_submissions',
+            model_name="activitytype",
+            name="number_of_submissions",
         ),
         migrations.AddField(
-            model_name='activity',
-            name='number_of_submissions',
+            model_name="activity",
+            name="number_of_submissions",
             field=models.PositiveIntegerField(default=1),
         ),
     ]

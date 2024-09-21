@@ -92,13 +92,13 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
                 validate_email(invitee)
                 CleanEmailMixin().validate_invitation(invitee)
                 invite = Invitation.create(invitee, group=teacher_group)
-            except (ValidationError):
+            except ValidationError:
                 response["invalid"].append({invitee: "invalid email"})
-            except (AlreadyAccepted):
+            except AlreadyAccepted:
                 response["invalid"].append({invitee: "already accepted"})
-            except (AlreadyInvited):
+            except AlreadyInvited:
                 response["invalid"].append({invitee: "pending invite"})
-            except (UserRegisteredEmail):
+            except UserRegisteredEmail:
                 response["invalid"].append({invitee: "user registered email"})
             else:
                 invite.send_invitation(request)

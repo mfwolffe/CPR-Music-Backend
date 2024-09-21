@@ -7,28 +7,44 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0027_migrate_piece_to_assignment_20230613_1319'),
+        ("assignments", "0027_migrate_piece_to_assignment_20230613_1319"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AssignmentGroup',
+            name="AssignmentGroup",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("type", models.CharField(max_length=255)),
             ],
         ),
         migrations.AlterModelOptions(
-            name='curriculum',
-            options={'verbose_name': 'Curriculum', 'verbose_name_plural': 'Curricula'},
+            name="curriculum",
+            options={"verbose_name": "Curriculum", "verbose_name_plural": "Curricula"},
         ),
         migrations.AlterModelOptions(
-            name='plannedactivity',
-            options={'ordering': ['piece_plan__name', 'order'], 'verbose_name_plural': 'Planned Activities'},
+            name="plannedactivity",
+            options={
+                "ordering": ["piece_plan__name", "order"],
+                "verbose_name_plural": "Planned Activities",
+            },
         ),
         migrations.AddField(
-            model_name='assignment',
-            name='group',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='assignments.assignmentgroup'),
+            model_name="assignment",
+            name="group",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="assignments.assignmentgroup",
+            ),
         ),
     ]

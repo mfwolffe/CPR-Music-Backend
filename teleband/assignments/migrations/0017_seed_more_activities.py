@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 def update_site_forward(apps, schema_editor):
     """Set site domain and name."""
     Activity = apps.get_model("assignments", "Activity")
@@ -28,7 +29,7 @@ def update_site_forward(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0016_alter_activity_part_type'),
+        ("assignments", "0016_alter_activity_part_type"),
     ]
 
     operations = [migrations.RunPython(update_site_forward, migrations.RunPython.noop)]

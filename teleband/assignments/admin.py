@@ -1,9 +1,17 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from .models import ActivityCategory, ActivityType, Activity, \
-                    Assignment, Curriculum, CurriculumEntry, \
-                    PiecePlan, PlannedActivity, AssignmentGroup 
+from .models import (
+    ActivityCategory,
+    ActivityType,
+    Activity,
+    Assignment,
+    Curriculum,
+    CurriculumEntry,
+    PiecePlan,
+    PlannedActivity,
+    AssignmentGroup,
+)
 
 
 @admin.register(ActivityCategory)
@@ -47,17 +55,19 @@ class AssignmentAdmin(VersionAdmin):
     date_hierarchy = "created_at"
     save_as = True
 
+
 class PiecePlanActivityInline(admin.TabularInline):
     model = PlannedActivity
     extra = 0
     ordering = ("order",)
 
+
 @admin.register(PiecePlan)
 class PiecePlanAdmin(VersionAdmin):
     list_display = (
-        "id", 
+        "id",
         "name",
-        "piece", 
+        "piece",
         "type",
     )
     list_filter = (
@@ -68,27 +78,28 @@ class PiecePlanAdmin(VersionAdmin):
     raw_id_fields = ("activities",)
     save_as = True
 
+
 class AssignmentInline(admin.TabularInline):
     model = Assignment
     extra = 0
     ordering = ("-id",)
 
+
 @admin.register(AssignmentGroup)
 class AssignmentGroupAdmin(VersionAdmin):
     list_display = (
-        "id", 
+        "id",
         "type",
     )
-    list_filter = (
-        "type",
-    )
+    list_filter = ("type",)
     inlines = (AssignmentInline,)
+
 
 # @admin.register(PlannedActivity)
 # class PlannedActivityAdmin(VersionAdmin):
 #     list_display = (
-#         "id", 
-#         "piece_plan", 
+#         "id",
+#         "piece_plan",
 #         "activity",
 #         "order",
 #     )
@@ -97,18 +108,20 @@ class AssignmentGroupAdmin(VersionAdmin):
 #         "activity",
 #     )
 
+
 class CurriculumEntryInline(admin.TabularInline):
     model = CurriculumEntry
     extra = 0
     ordering = ("order",)
 
+
 @admin.register(Curriculum)
 class CurriculumAdmin(VersionAdmin):
     list_display = (
-        "id", 
+        "id",
         "name",
         "course",
-        "ordered", 
+        "ordered",
     )
     list_filter = (
         "course",
