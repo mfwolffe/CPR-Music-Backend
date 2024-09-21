@@ -1,9 +1,8 @@
 from django.db import models
-from django.conf import settings
 
 from teleband.courses.models import Course, Enrollment
 from teleband.instruments.models import Instrument
-from teleband.musics.models import PartType, Part, Piece
+from teleband.musics.models import Part, PartType, Piece
 
 
 class ActivityCategory(models.Model):
@@ -22,7 +21,6 @@ class ActivityType(models.Model):
 
     name = models.CharField(unique=True, max_length=255)
     category = models.ForeignKey(ActivityCategory, on_delete=models.PROTECT)
-    
 
     class Meta:
         verbose_name = "Activity Type"
@@ -61,15 +59,17 @@ class PiecePlan(models.Model):
         piece = self.piece
         for activity in self.activities.all():
             part = Part.for_activity(activity, piece)
-            assignments.append(Assignment.objects.create(
-                activity=activity,
-                enrollment=enrollment,
-                part=part,
-                instrument=instrument,
-                piece_plan=self,
-                deadline=deadline,
-                piece=self.piece,
-            ))
+            assignments.append(
+                Assignment.objects.create(
+                    activity=activity,
+                    enrollment=enrollment,
+                    part=part,
+                    instrument=instrument,
+                    piece_plan=self,
+                    deadline=deadline,
+                    piece=self.piece,
+                )
+            )
         return assignments
 
     def __str__(self):
@@ -86,9 +86,13 @@ class Assignment(models.Model):
     part = models.ForeignKey(Part, on_delete=models.PROTECT)
     deadline = models.DateField(null=True, blank=True)
     instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT)
-    piece_plan = models.ForeignKey(PiecePlan, on_delete=models.PROTECT, null=True, blank=True)
+    piece_plan = models.ForeignKey(
+        PiecePlan, on_delete=models.PROTECT, null=True, blank=True
+    )
     piece = models.ForeignKey(Piece, on_delete=models.PROTECT, null=True, blank=True)
-    group = models.ForeignKey("AssignmentGroup", on_delete=models.PROTECT, null=True, blank=True)
+    group = models.ForeignKey(
+        "AssignmentGroup", on_delete=models.PROTECT, null=True, blank=True
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -96,17 +100,19 @@ class Assignment(models.Model):
         # FIXME: do this with https://docs.djangoproject.com/en/5.0/ref/models/options/#unique-together instead.
         # nevermind, this may be deprecated
         constraints = [
-            models.UniqueConstraint(fields=["activity", "enrollment", "piece"], name="unique_assignment")
+            models.UniqueConstraint(
+                fields=["activity", "enrollment", "piece"], name="unique_assignment"
+            )
         ]
 
     def __str__(self):
         return f"[{self.enrollment.user.username}] {self.activity.id} {self.piece}"
-    
+
 
 class AssignmentGroup(models.Model):
 
     type = models.CharField(max_length=255, null=True, blank=True)
-    
+
 
 class PlannedActivity(models.Model):
 
@@ -137,6 +143,7 @@ class Curriculum(models.Model):
     def __str__(self):
         return f"{self.name}: {self.course.name}"
 
+
 class CurriculumEntry(models.Model):
 
     curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
@@ -149,4 +156,3 @@ class CurriculumEntry(models.Model):
 
     def __str__(self):
         return f"{self.curriculum.name}: {self.piece_plan.name}"
-

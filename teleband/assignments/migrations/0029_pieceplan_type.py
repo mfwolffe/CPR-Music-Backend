@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0028_add_assignment_group'),
+        ("assignments", "0028_add_assignment_group"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='pieceplan',
-            name='type',
+            model_name="pieceplan",
+            name="type",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
     ]

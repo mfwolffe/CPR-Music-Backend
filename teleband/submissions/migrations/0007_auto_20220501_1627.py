@@ -7,26 +7,42 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submissions', '0006_submissionattachment_submitted'),
+        ("submissions", "0006_submissionattachment_submitted"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='submissionattachment',
-            options={'ordering': ['-submitted'], 'verbose_name': 'Submission Attachment', 'verbose_name_plural': 'Submission Attachments'},
+            name="submissionattachment",
+            options={
+                "ordering": ["-submitted"],
+                "verbose_name": "Submission Attachment",
+                "verbose_name_plural": "Submission Attachments",
+            },
         ),
         migrations.RemoveField(
-            model_name='grade',
-            name='submission',
+            model_name="grade",
+            name="submission",
         ),
         migrations.AddField(
-            model_name='submission',
-            name='grade',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='student_submission', to='submissions.grade'),
+            model_name="submission",
+            name="grade",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="student_submission",
+                to="submissions.grade",
+            ),
         ),
         migrations.AddField(
-            model_name='submission',
-            name='self_grade',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='own_submission', to='submissions.grade'),
+            model_name="submission",
+            name="self_grade",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="own_submission",
+                to="submissions.grade",
+            ),
         ),
     ]

@@ -51,7 +51,13 @@ class PartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Part
-        fields = ["name", "piece", "transpositions", "sample_audio", "chord_scale_pattern"]
+        fields = [
+            "name",
+            "piece",
+            "transpositions",
+            "sample_audio",
+            "chord_scale_pattern",
+        ]
 
 
 class PartTranspositionSerializer(serializers.ModelSerializer):

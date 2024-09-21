@@ -1,9 +1,15 @@
-
 from django.db import IntegrityError
 from teleband.courses.models import Enrollment, Course
 from teleband.musics.models import Piece, Part
-from teleband.assignments.models import Activity, ActivityType, Assignment, AssignmentGroup, PiecePlan
+from teleband.assignments.models import (
+    Activity,
+    ActivityType,
+    Assignment,
+    AssignmentGroup,
+    PiecePlan,
+)
 import random
+
 
 def assign_all_piece_activities(course, piece, deadline=None):
     assignments = []
@@ -43,12 +49,14 @@ def assign_piece_plan(course, piece_plan, deadline=None):
         return assign_telephone_fixed(course, piece_plan, deadline)
     # else:
     #     raise Exception("Unknown piece plan type")
-    
+
 
 def assign_vanilla_piece_plan(course, piece_plan, deadline=None):
     assignments = []
     for activity in piece_plan.activities.all():
-        assignments += assign_one_piece_activity(course, piece_plan.piece, activity, deadline, piece_plan)
+        assignments += assign_one_piece_activity(
+            course, piece_plan.piece, activity, deadline, piece_plan
+        )
     return assignments
 
 
@@ -58,22 +66,27 @@ class AssignmentGroupSizeException(Exception):
 
 def assign_telephone_fixed(course, piece_plan, deadline=None):
     num_activities = piece_plan.activities.count()
-    num_enrollments = Enrollment.objects.filter(course=course, role__name="Student").count()
+    num_enrollments = Enrollment.objects.filter(
+        course=course, role__name="Student"
+    ).count()
     excess_enrollments = num_enrollments % num_activities
     if num_enrollments < num_activities:
         raise AssignmentGroupSizeException()
-           
+
     # split the enrollments into groups of num_activities at random
     # and then assign the excess enrollments to the last group
     enrollments = list(Enrollment.objects.filter(course=course, role__name="Student"))
     random.shuffle(enrollments)
     final_group = [] if excess_enrollments == 0 else enrollments[-excess_enrollments:]
-    groups = [enrollments[i:i + num_activities] for i in range(0, len(enrollments) - excess_enrollments, num_activities)]
+    groups = [
+        enrollments[i : i + num_activities]
+        for i in range(0, len(enrollments) - excess_enrollments, num_activities)
+    ]
 
     if excess_enrollments != 0:
-        used_enrollments = enrollments[0:len(enrollments) - excess_enrollments]
+        used_enrollments = enrollments[0 : len(enrollments) - excess_enrollments]
         random.shuffle(used_enrollments)
-        final_group += used_enrollments[0:num_activities - excess_enrollments]
+        final_group += used_enrollments[0 : num_activities - excess_enrollments]
         groups.append(final_group)
 
     # create an assignment group for each group of enrollments
@@ -84,7 +97,7 @@ def assign_telephone_fixed(course, piece_plan, deadline=None):
     for group in groups:
         assignment_group = AssignmentGroup.objects.create(type="telephone_fixed")
         group_assignments = []
-        for (e, a) in zip(group, piece_plan.activities.all()):
+        for e, a in zip(group, piece_plan.activities.all()):
             part = Part.for_activity(a, piece)
             group_assignments.append(
                 Assignment.objects.create(
@@ -94,17 +107,23 @@ def assign_telephone_fixed(course, piece_plan, deadline=None):
                     instrument=e.instrument if e.instrument else e.user.instrument,
                     piece_plan=piece_plan,
                     piece=piece,
-                    group=assignment_group
+                    group=assignment_group,
                 )
             )
         assignments += group_assignments
     return assignments
 
 
-def assign_curriculum(course, curriculum, deadline=None):        
+def assign_curriculum(course, curriculum, deadline=None):
     # for each piece plan in the curriculum, assign all planned activities
     # in the piece plan.
-    return sum((assign_piece_plan(course, piece_plan, deadline) for piece_plan in curriculum.piece_plans.all()), [])
+    return sum(
+        (
+            assign_piece_plan(course, piece_plan, deadline)
+            for piece_plan in curriculum.piece_plans.all()
+        ),
+        [],
+    )
 
 
 def get_query_type_names(piece):
@@ -132,4 +151,3 @@ def get_query_type_names(piece):
     if piece.name in connects:
         query_type_names.append(connects[piece.name])
     return query_type_names
-

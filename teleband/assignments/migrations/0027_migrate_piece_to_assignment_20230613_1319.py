@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 def move_piece_to_assignment(apps, schema_editor):
     Assignment = apps.get_model("assignments", "Assignment")
     Part = apps.get_model("musics", "Part")
@@ -9,12 +10,11 @@ def move_piece_to_assignment(apps, schema_editor):
         assignment.piece = assignment.part.piece
         assignment.save()
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0026_assignment_piece'),
+        ("assignments", "0026_assignment_piece"),
     ]
 
-    operations = [
-        migrations.RunPython(move_piece_to_assignment)
-    ]
+    operations = [migrations.RunPython(move_piece_to_assignment)]

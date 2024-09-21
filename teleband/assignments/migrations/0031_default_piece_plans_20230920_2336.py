@@ -137,7 +137,7 @@ def update_site_forward(apps, schema_editor):
         category=act_cat.name,
         body="Now that you have learned this tune, write about what you have learned about playing your instrument.",
     )
-    
+
     Piece = apps.get_model("musics", "Piece")
     PiecePlan = apps.get_model("assignments", "PiecePlan")
     PlannedActivity = apps.get_model("assignments", "PlannedActivity")

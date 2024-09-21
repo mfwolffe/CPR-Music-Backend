@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 def move_type_and_category(apps, schema_editor):
     Activity = apps.get_model("assignments", "Activity")
     ActivityType = apps.get_model("assignments", "ActivityType")
@@ -11,12 +12,11 @@ def move_type_and_category(apps, schema_editor):
         activity.category = activity.activity_type.category.name
         activity.save()
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0024_add_activity_type_and_category_fields'),
+        ("assignments", "0024_add_activity_type_and_category_fields"),
     ]
 
-    operations = [
-        migrations.RunPython(move_type_and_category)
-    ]
+    operations = [migrations.RunPython(move_type_and_category)]

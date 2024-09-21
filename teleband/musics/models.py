@@ -60,12 +60,15 @@ class Part(models.Model):
     part_type = models.ForeignKey(PartType, on_delete=models.PROTECT)
     piece = models.ForeignKey(Piece, related_name="parts", on_delete=models.PROTECT)
     sample_audio = models.FileField(blank=True, upload_to="sample_audio/")
-    chord_scale_pattern = models.JSONField(blank=True,null=True)
+    chord_scale_pattern = models.JSONField(blank=True, null=True)
 
     def for_activity(activity, piece):
         # Get this piece’s part for this kind of activity
         kwargs = {"piece": piece}
-        if activity.part_type and piece.parts.filter(part_type=activity.part_type).exists():
+        if (
+            activity.part_type
+            and piece.parts.filter(part_type=activity.part_type).exists()
+        ):
             kwargs["part_type"] = activity.part_type
         # TODO: should we have an else for when it's null? I think so, here it is.
         else:

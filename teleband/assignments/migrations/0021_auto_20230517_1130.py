@@ -6,30 +6,30 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0020_auto_20230408_1952'),
+        ("assignments", "0020_auto_20230408_1952"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='CurriculumPiecePlan',
-            new_name='CurriculumEntry',
+            old_name="CurriculumPiecePlan",
+            new_name="CurriculumEntry",
         ),
         migrations.RenameModel(
-            old_name='PiecePlanActivity',
-            new_name='PlannedActivity',
+            old_name="PiecePlanActivity",
+            new_name="PlannedActivity",
         ),
         migrations.RemoveField(
-            model_name='pieceplan',
-            name='ordered',
+            model_name="pieceplan",
+            name="ordered",
         ),
         migrations.AddField(
-            model_name='activitytype',
-            name='number_of_submissions',
+            model_name="activitytype",
+            name="number_of_submissions",
             field=models.PositiveIntegerField(default=1),
         ),
         migrations.AddField(
-            model_name='curriculum',
-            name='ordered',
+            model_name="curriculum",
+            name="ordered",
             field=models.BooleanField(default=False),
         ),
     ]

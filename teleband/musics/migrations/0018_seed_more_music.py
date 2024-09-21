@@ -701,6 +701,7 @@ flatios = {
     },
 }
 
+
 def update_site_forward(apps, schema_editor):
     Piece = apps.get_model("musics", "Piece")
     if Piece.objects.filter(name=data[0]["name"]).exists():
@@ -712,11 +713,11 @@ def update_site_forward(apps, schema_editor):
                 t["flatio"] = json.dumps(flatios[part["name"]][t["transposition"]])
         create_piece_et_al(apps, piece)
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('musics', '0017_seed_combined_part_20220720_1413'),
+        ("musics", "0017_seed_combined_part_20220720_1413"),
     ]
 
     operations = [migrations.RunPython(update_site_forward, migrations.RunPython.noop)]
-

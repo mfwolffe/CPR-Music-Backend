@@ -103,9 +103,6 @@ flatios = {
 }
 
 
-
-
-
 def update_site_forward(apps, schema_editor):
     Piece = apps.get_model("musics", "Piece")
     already_at_piece = Piece.objects.filter(name="Air for Band").exists()
