@@ -128,7 +128,7 @@ The following details how to deploy this application.
 
 # Renewing SSL Certs (requires creating DNS TXT Entries rn 😕)
 1. maybe this is the command? 
-    * `sudo certbot certonly --manual --server https://acme-v02.api.letsencrypt.org/directory --preferred-challenges dns-01 -d "*.musiccpr.org,musiccpr.org"`
+    * `sudo certbot certonly --manual --server https://acme-v02.api.letsencrypt.org/directory --preferred-challenges dns-01 -d "musiccpr.org,dev-api.musiccpr.org,dev.musiccpr.org,api.musiccpr.org"`
 # Deploying to Prod first time
 Prefer to have:
 1. same ec2 instance as dev
