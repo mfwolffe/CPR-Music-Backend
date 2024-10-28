@@ -1,6 +1,7 @@
 from django.urls import path
 
 from teleband.dashboards.views import AssignmentListView, CourseListView, csv_view
+
 app_name = "dashboards"
 urlpatterns = [
     path("", AssignmentListView.as_view(), name="assignment_list"),

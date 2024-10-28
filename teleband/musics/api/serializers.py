@@ -1,8 +1,13 @@
 from rest_framework import serializers
 
 from teleband.musics.models import (
-    Piece, Part, PartTransposition, Composer, PartType,
-    PartInstrumentSample, EnsembleType
+    Piece,
+    Part,
+    PartTransposition,
+    Composer,
+    PartType,
+    PartInstrumentSample,
+    EnsembleType,
 )
 from teleband.instruments.models import Transposition
 from teleband.utils.serializers import GenericNameSerializer
@@ -49,7 +54,7 @@ class PartTranspositionSimpleSerializer(serializers.ModelSerializer):
 class PartInstrumentSampleSerializer(serializers.ModelSerializer):
     class Meta:
         model = PartInstrumentSample
-        fields = ['id', 'part', 'instrument', 'sample_audio']
+        fields = ["id", "part", "instrument", "sample_audio"]
 
 
 class PartSerializer(serializers.ModelSerializer):
