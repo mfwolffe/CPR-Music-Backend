@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script>
+  const compositions = [];
+  const containers = [];
+</script>
+<!--the app name dashboards is needed before the name set in urls file-->
+<a href="{% url 'dashboards:export_csv' %}" class="btn btn-primary">Download CSV</a>
+{% comment %} https://developer.mozilla.org/en-US/docs/Web/HTML/Element/col#usage_notes {% endcomment %}
+<table class="dashboard">
+  <colgroup>
+    <col span="1" class="idnum">
+  </colgroup>
+  <colgroup>
+    <col span="2" class="course">
+  </colgroup>
+  <colgroup>
+    <col span="4" class="piece">
+  </colgroup>
+  <colgroup>
+    <col span="3" class="student">
+  </colgroup>
+  <colgroup>
+    <col span="4" class="assignment">
+  </colgroup>
+  <colgroup>
+    <col span="5" class="submissions">
+  </colgroup>
+  <colgroup>
+    <col span="3" class="attachments">
+  </colgroup>
+  <colgroup>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th colspan="2">Course</th>
+      <th colspan="4">Piece</th>
+      <th colspan="3">Student</th>
+      <th colspan="4">Assignment</th>
+      <th colspan="5">Submissions</th>
+      <th colspan="3">Submission Attachment</th>
+    </tr>
+    <tr>
+      <th>assnid</th>
+      <th>id</th>
+      <th>name</th>
+      <th>id</th>
+      <th>name</th>
+      <th>plan id</th>
+      <th>plan name</th>
+      <th>id</th>
+      <th>instrument id</th>
+      <th>instrument name</th>
+      <th>act id</th>
+      <th>activity</th>
+      <th>instrument id</th>
+      <th>instrument name</th>
+      <th>id</th>
+      <th>content</th>
+      <th>submitted</th>
+      <th>grade</th>
+      <th>self grade</th>
+      <th>id</th>
+      <th>file</th>
+      <th>submitted</th>
+    </tr>
+  </thead>
+
+  {% for assn in assignment_list %}
+  <tbody>
+    {% if assn.submissions.all|length == 0 %}
+    <tr>
+      <td>{{ assn.id }}</td>
+      <td>{{ assn.enrollment.course.id }}</td>
+      <td>{{ assn.enrollment.course.name }}</td>
+      <td>{{ assn.piece.id }}</td>
+      <td>{{ assn.piece.name }}</td>
+      <td>{{ assn.piece_plan.id }}</td>
+      <td>{{ assn.piece_plan }}</td>
+      <td>{{ assn.enrollment.user.id }}</td>
+      <td>{{ assn.enrollment.instrument.id }}</td>
+      <td>{{ assn.enrollment.instrument.name }}</td>
+      <td>{{ assn.activity.id }}</td>
+      <td>{{ assn.activity }}</td>
+      <td>{{ assn.instrument.id }}</td>
+      <td>{{ assn.instrument.name }}</td>
+      <td colspan="8">N/A</td>
+    </tr>
+    {% else %}
+    {% for sub in assn.submissions.all %}
+    {% for att in sub.attachments.all %}
+    <tr>
+      <td>{{ assn.id }}</td>
+      <td>{{ assn.enrollment.course.id }}</td>
+      <td>{{ assn.enrollment.course.name }}</td>
+      <td>{{ assn.piece.id }}</td>
+      <td>{{ assn.piece.name }}</td>
+      <td>{{ assn.piece_plan.id }}</td>
+      <td>{{ assn.piece_plan }}</td>
+      <td>{{ assn.enrollment.user.id }}</td>
+      <td>{{ assn.enrollment.instrument.id }}</td>
+      <td>{{ assn.enrollment.instrument.name }}</td>
+      <td>{{ assn.activity.id }}</td>
+      <td>{{ assn.activity }}</td>
+      <td>{{ assn.instrument.id }}</td>
+      <td>{{ assn.instrument.name }}</td>
+      <td>{{ sub.id }}</td>
+      {% if assn.activity.category == 'Create' %}
+      <td>
+        Create, see below
+      </td>
+      {% else %}
+      <td>{{ sub.content }}</td>
+      {% endif %}
+      <td>{{ sub.submitted }}</td>
+      <td>{{ sub.grade }}</td>
+      <td>{{ sub.self_grade }}</td>
+      <td>{{ att.id }}</td>
+      <td>{{ att.file }}</td>
+      <td>{{ att.submitted }}</td>
+    </tr>
+    {% if assn.activity.category == 'Create' %}
+    <tr>
+      <td colspan="22">
+        <div class="" id="flat-{{sub.id}}">
+          <div class="score"></div>
+          <div class="png"></div>
+        </div>
+        <script>
+          compositions.push({{ sub.content | safe }})
+          containers.push(document.getElementById('flat-{{sub.id}}'))
+        </script>
+      </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+    {% endif %}
+  </tbody>
+  {% endfor %}
+</table>
+{% endblock content %}
+
+{% block custom_javascript %}
+<script src="https://prod.flat-cdn.com/embed-js/v2.3.0/embed.min.js"></script>
+<script>
+  for (let i = 0; i < compositions.length; i++) {
+    let embed = new Flat.Embed(containers[i].getElementsByClassName("score")[0], {
+      score: 'blank',
+      embedParams: {
+        appId: '60a51c906bcde01fc75a3ad0',
+        layout: 'responsive',
+        branding: false,
+        themePrimary: '#450084',
+        controlsDisplay: false,
+        controlsPlay: false,
+        controlsFullscreen: false,
+        controlsZoom: false,
+        controlsPrint: false,
+        displayFirstLinePartsNames: false,
+        toolsetId: '64be80de738efff96cc27edd',
+      },
+    });
+    embed.loadJSON(compositions[i]).then(() => {
+      embed.getPNG({
+        result: "dataURL"
+      })
+        .then(function (png) {
+          console.log("png")
+          console.log(png)
+          const scoreimg = document.createElement("a")
+          scoreimg.href = png
+          scoreimg.download = `${containers[i].id}-composition.png`
+          containers[i].getElementsByClassName("png")[0].append(scoreimg)
+          scoreimg.click()
+
+        })
+    });
+
+  }
+</script>
+{% endblock custom_javascript %}
