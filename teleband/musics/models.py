@@ -96,12 +96,14 @@ class PartTransposition(models.Model):
 
 
 class PartInstrumentSample(models.Model):
-    part = models.ForeignKey(Part, related_name="instrument_samples", on_delete=models.PROTECT)
-    instrument = models.ForeignKey('instruments.Instrument', on_delete=models.PROTECT)
+    part = models.ForeignKey(
+        Part, related_name="instrument_samples", on_delete=models.PROTECT
+    )
+    instrument = models.ForeignKey("instruments.Instrument", on_delete=models.PROTECT)
     sample_audio = models.FileField(upload_to="instrument_samples/")
 
     class Meta:
-        unique_together = ['part', 'instrument']
+        unique_together = ["part", "instrument"]
         verbose_name = "Part Instrument Sample"
         verbose_name_plural = "Part Instrument Samples"
 
