@@ -1,7 +1,15 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from .models import EnsembleType, Composer, Piece, PartType, Part, PartTransposition
+from .models import (
+    EnsembleType,
+    Composer,
+    PartInstrumentSample,
+    Piece,
+    PartType,
+    Part,
+    PartTransposition,
+)
 
 
 @admin.register(EnsembleType)
@@ -49,3 +57,9 @@ class PartAdmin(VersionAdmin):
 class PartTranspositionAdmin(VersionAdmin):
     list_display = ("id", "part", "transposition", "flatio")
     list_filter = ("part", "transposition")
+
+
+@admin.register(PartInstrumentSample)
+class PartInstrumentSampleAdmin(VersionAdmin):
+    list_display = ("id", "part", "instrument", "sample_audio")
+    list_filter = ("part", "instrument")
