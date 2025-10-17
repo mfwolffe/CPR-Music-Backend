@@ -57,6 +57,9 @@ class ActivityProgressSerializer(serializers.ModelSerializer):
             "activity_logs",
             "question_responses",
             "participant_email",
+            "current_audio_url",
+            "audio_edit_history",
+            "audio_metadata",
             "created_at",
             "updated_at",
         ]

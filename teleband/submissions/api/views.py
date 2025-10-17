@@ -137,38 +137,52 @@ class ActivityProgressViewSet(GenericViewSet):
         assignment_id = kwargs.get("assignment_id")
 
         try:
-            progress, created = ActivityProgress.objects.get_or_create(
-                assignment_id=assignment_id
-            )
+            # Use transaction with row-level locking to prevent race conditions
+            with transaction.atomic():
+                progress, created = ActivityProgress.objects.select_for_update().get_or_create(
+                    assignment_id=assignment_id
+                )
 
-            # Extract event data from request
-            operation = request.data.get("operation")
-            step = request.data.get("step", progress.current_step)
-            data = request.data.get("data", {})
-            email = request.data.get("email")
+                # Extract event data from request
+                operation = request.data.get("operation")
+                step = request.data.get("step", progress.current_step)
+                data = request.data.get("data", {})
+                email = request.data.get("email")
 
-            # Store email if provided and not already set
-            if email and not progress.participant_email:
-                progress.participant_email = email
+                # DEBUG: Log what we received
+                print(f"🔍 Backend log_event received:")
+                print(f"   operation: {operation}")
+                print(f"   step: {step}")
+                print(f"   BEFORE step_completions: {progress.step_completions}")
 
-            # Add timestamped event to logs
-            event = {
-                "timestamp": datetime.now().isoformat(),
-                "step": step,
-                "operation": operation,
-                "data": data
-            }
-            progress.activity_logs.append(event)
+                # Store email if provided and not already set
+                if email and not progress.participant_email:
+                    progress.participant_email = email
 
-            # Track operation completion
-            step_key = str(step)
-            if step_key not in progress.step_completions:
-                progress.step_completions[step_key] = []
-            if operation not in progress.step_completions[step_key]:
-                progress.step_completions[step_key].append(operation)
+                # Add timestamped event to logs
+                event = {
+                    "timestamp": datetime.now().isoformat(),
+                    "step": step,
+                    "operation": operation,
+                    "data": data
+                }
+                progress.activity_logs.append(event)
 
-            progress.save()
+                # Track operation completion
+                step_key = str(step)
+                if step_key not in progress.step_completions:
+                    progress.step_completions[step_key] = []
+                if operation not in progress.step_completions[step_key]:
+                    progress.step_completions[step_key].append(operation)
+                    print(f"   ✅ Added {operation} to step {step_key}")
+                else:
+                    print(f"   ⏭️ Skipped {operation} (already exists)")
 
+                print(f"   AFTER step_completions: {progress.step_completions}")
+
+                progress.save()
+
+            # Serialize AFTER transaction completes
             serializer = self.serializer_class(progress)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -184,18 +198,24 @@ class ActivityProgressViewSet(GenericViewSet):
         assignment_id = kwargs.get("assignment_id")
 
         try:
-            progress = ActivityProgress.objects.get(assignment_id=assignment_id)
+            with transaction.atomic():
+                progress = ActivityProgress.objects.select_for_update().get(
+                    assignment_id=assignment_id
+                )
 
-            # Save any question responses
-            responses = request.data.get("question_responses", {})
-            progress.question_responses.update(responses)
+                # Save any question responses
+                responses = request.data.get("question_responses", {})
+                progress.question_responses.update(responses)
 
-            # Advance to next step (max 4)
-            if progress.current_step < 4:
-                progress.current_step += 1
+                # Advance to next step (max 4)
+                if progress.current_step < 4:
+                    progress.current_step += 1
+                    print(f"✅ Advancing from step {progress.current_step - 1} to step {progress.current_step}")
 
-            progress.save()
+                progress.save()
 
+            # Refresh from database to ensure fresh data
+            progress.refresh_from_db()
             serializer = self.serializer_class(progress)
             return Response(serializer.data, status=status.HTTP_200_OK)
 

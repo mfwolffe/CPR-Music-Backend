@@ -83,6 +83,22 @@ class ActivityProgress(models.Model):
         null=True,
         help_text="Email from Qualtrics for survey matching"
     )
+
+    # Audio state persistence for cross-activity editing
+    current_audio_url = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Current audio blob URL or file path"
+    )
+    audio_edit_history = models.JSONField(
+        default=list,
+        help_text="Array of edit history states for undo/redo: [{url, effectName, metadata}, ...]"
+    )
+    audio_metadata = models.JSONField(
+        default=dict,
+        help_text="Additional audio metadata: {duration, sampleRate, numberOfChannels, ...}"
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
