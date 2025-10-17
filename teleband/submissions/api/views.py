@@ -145,6 +145,11 @@ class ActivityProgressViewSet(GenericViewSet):
             operation = request.data.get("operation")
             step = request.data.get("step", progress.current_step)
             data = request.data.get("data", {})
+            email = request.data.get("email")
+
+            # Store email if provided and not already set
+            if email and not progress.participant_email:
+                progress.participant_email = email
 
             # Add timestamped event to logs
             event = {

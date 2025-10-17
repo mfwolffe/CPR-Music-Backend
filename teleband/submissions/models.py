@@ -78,6 +78,11 @@ class ActivityProgress(models.Model):
         default=dict,
         help_text="Student responses to embedded questions: {question_id: response, ...}"
     )
+    participant_email = models.EmailField(
+        blank=True,
+        null=True,
+        help_text="Email from Qualtrics for survey matching"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

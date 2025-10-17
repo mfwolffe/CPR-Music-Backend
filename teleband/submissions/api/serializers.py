@@ -56,6 +56,7 @@ class ActivityProgressSerializer(serializers.ModelSerializer):
             "step_completions",
             "activity_logs",
             "question_responses",
+            "participant_email",
             "created_at",
             "updated_at",
         ]
