@@ -11,11 +11,13 @@ from .serializers import (
     GradeSerializer,
     SubmissionSerializer,
     AttachmentSerializer,
+    ActivityProgressSerializer,
 )
 
 from teleband.courses.models import Course
-from teleband.submissions.models import Grade, Submission, SubmissionAttachment
+from teleband.submissions.models import Grade, Submission, SubmissionAttachment, ActivityProgress
 from teleband.assignments.models import Assignment
+from datetime import datetime
 
 
 class SubmissionViewSet(
@@ -109,3 +111,117 @@ class GradeViewSet(ModelViewSet):
                 "course_slug_slug"
             ]
         )
+
+
+class ActivityProgressViewSet(GenericViewSet):
+    serializer_class = ActivityProgressSerializer
+    queryset = ActivityProgress.objects.all()
+
+    def get_object(self):
+        """Get or create progress for the current assignment."""
+        assignment_id = self.kwargs.get("assignment_id")
+        progress, created = ActivityProgress.objects.get_or_create(
+            assignment_id=assignment_id
+        )
+        return progress
+
+    def retrieve(self, request, *args, **kwargs):
+        """Get progress for current assignment."""
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=["post"])
+    def log_event(self, request, **kwargs):
+        """Log an operation event to the activity progress."""
+        assignment_id = kwargs.get("assignment_id")
+
+        try:
+            progress, created = ActivityProgress.objects.get_or_create(
+                assignment_id=assignment_id
+            )
+
+            # Extract event data from request
+            operation = request.data.get("operation")
+            step = request.data.get("step", progress.current_step)
+            data = request.data.get("data", {})
+
+            # Add timestamped event to logs
+            event = {
+                "timestamp": datetime.now().isoformat(),
+                "step": step,
+                "operation": operation,
+                "data": data
+            }
+            progress.activity_logs.append(event)
+
+            # Track operation completion
+            step_key = str(step)
+            if step_key not in progress.step_completions:
+                progress.step_completions[step_key] = []
+            if operation not in progress.step_completions[step_key]:
+                progress.step_completions[step_key].append(operation)
+
+            progress.save()
+
+            serializer = self.serializer_class(progress)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    @action(detail=False, methods=["post"])
+    def submit_step(self, request, **kwargs):
+        """Submit current step and advance to next."""
+        assignment_id = kwargs.get("assignment_id")
+
+        try:
+            progress = ActivityProgress.objects.get(assignment_id=assignment_id)
+
+            # Save any question responses
+            responses = request.data.get("question_responses", {})
+            progress.question_responses.update(responses)
+
+            # Advance to next step (max 4)
+            if progress.current_step < 4:
+                progress.current_step += 1
+
+            progress.save()
+
+            serializer = self.serializer_class(progress)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except ActivityProgress.DoesNotExist:
+            return Response(
+                {"error": "Activity progress not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+    @action(detail=False, methods=["post"])
+    def save_response(self, request, **kwargs):
+        """Save a question response without advancing step."""
+        assignment_id = kwargs.get("assignment_id")
+
+        try:
+            progress, created = ActivityProgress.objects.get_or_create(
+                assignment_id=assignment_id
+            )
+
+            question_id = request.data.get("question_id")
+            response_text = request.data.get("response")
+
+            if question_id and response_text is not None:
+                progress.question_responses[question_id] = response_text
+                progress.save()
+
+            serializer = self.serializer_class(progress)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )

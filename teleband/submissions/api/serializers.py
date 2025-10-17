@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from teleband.submissions.models import Grade, Submission, SubmissionAttachment
+from teleband.submissions.models import Grade, Submission, SubmissionAttachment, ActivityProgress
 
 # from teleband.assignments.api.serializers import AssignmentSerializer
 
@@ -44,3 +44,19 @@ class GradeSerializer(serializers.ModelSerializer):
             "student_submission",
             "own_submission",
         ]
+
+
+class ActivityProgressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActivityProgress
+        fields = [
+            "id",
+            "assignment",
+            "current_step",
+            "step_completions",
+            "activity_logs",
+            "question_responses",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["created_at", "updated_at"]

@@ -16,6 +16,7 @@ from teleband.submissions.api.views import (
     SubmissionViewSet,
     AttachmentViewSet,
     TeacherSubmissionViewSet,
+    ActivityProgressViewSet,
 )
 from teleband.musics.api.views import PieceViewSet
 from teleband.instruments.api.views import InstrumentViewSet
@@ -45,6 +46,7 @@ courses_router.register("piece-plans", PiecePlanViewSet)
 
 assignments_router = nested_cls(courses_router, "assignments", lookup="assignment")
 assignments_router.register("submissions", SubmissionViewSet)
+assignments_router.register("activity-progress", ActivityProgressViewSet, basename="activity-progress")
 
 attachments_router = nested_cls(assignments_router, "submissions", lookup="submission")
 attachments_router.register("attachments", AttachmentViewSet)
