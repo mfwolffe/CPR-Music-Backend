@@ -250,3 +250,42 @@ class ActivityProgressViewSet(GenericViewSet):
                 {"error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+    @action(detail=False, methods=["post"])
+    def save_audio_state(self, request, **kwargs):
+        """Save current audio state for persistence across activities."""
+        assignment_id = kwargs.get("assignment_id")
+
+        try:
+            with transaction.atomic():
+                progress, created = ActivityProgress.objects.select_for_update().get_or_create(
+                    assignment_id=assignment_id
+                )
+
+                # Extract audio state from request
+                audio_url = request.data.get("audio_url")
+                edit_history = request.data.get("edit_history")
+                metadata = request.data.get("metadata")
+
+                # Update audio state fields
+                if audio_url is not None:
+                    progress.current_audio_url = audio_url
+                if edit_history is not None:
+                    progress.audio_edit_history = edit_history
+                if metadata is not None:
+                    progress.audio_metadata = metadata
+
+                progress.save()
+
+            print(f"💾 Saved audio state for assignment {assignment_id}")
+            print(f"   audio_url: {progress.current_audio_url[:50] if progress.current_audio_url else None}...")
+            print(f"   edit_history length: {len(progress.audio_edit_history)}")
+
+            serializer = self.serializer_class(progress)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
