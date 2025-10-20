@@ -82,21 +82,21 @@ Moved to [Live reloading and SASS compilation](http://cookiecutter-django.readth
 
 ### Email Server
 
-In development, it is often nice to be able to see emails that are being sent from your application. If you choose to use [MailHog](https://github.com/mailhog/MailHog) when generating the project a local SMTP server with a web interface will be available.
+In development, it is often nice to be able to see emails that are being sent from your application. If you choose to use [mailpit](https://github.com/axllent/mailpit) when generating the project a local SMTP server with a web interface will be available.
 
-1.  [Download the latest MailHog release](https://github.com/mailhog/MailHog/releases) for your OS.
+1.  [Download the latest mailpit release](https://github.com/axllent/mailpit/releases) for your OS.
 
-2.  Rename the build to `MailHog`.
+2.  Rename the build to `mailpit`.
 
 3.  Copy the file to the project root.
 
 4.  Make it executable:
 
-        $ chmod +x MailHog
+        $ chmod +x mailpit
 
 5.  Spin up another terminal window and start it there:
 
-        ./MailHog
+        ./mailpit
 
 6.  Check out <http://127.0.0.1:8025/> to see how it goes.
 
