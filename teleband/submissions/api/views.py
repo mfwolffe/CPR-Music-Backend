@@ -126,8 +126,8 @@ class ActivityProgressViewSet(GenericViewSet):
         )
         return progress
 
-    def retrieve(self, request, *args, **kwargs):
-        """Get progress for current assignment."""
+    def list(self, request, *args, **kwargs):
+        """Get progress for current assignment (uses list URL since no pk needed)."""
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
@@ -197,12 +197,23 @@ class ActivityProgressViewSet(GenericViewSet):
     def submit_step(self, request, **kwargs):
         """Submit current step and advance to next."""
         assignment_id = kwargs.get("assignment_id")
+        submitted_step = request.data.get("step")
 
         try:
             with transaction.atomic():
-                progress = ActivityProgress.objects.select_for_update().get(
+                progress, created = ActivityProgress.objects.select_for_update().get_or_create(
                     assignment_id=assignment_id
                 )
+
+                # If a step was submitted, use it as the step being completed
+                # This ensures the user's actual position is used, not stale DB state
+                if submitted_step is not None:
+                    submitted_step = int(submitted_step)
+                    # Allow setting the step if it's valid (1-4)
+                    if 1 <= submitted_step <= 4:
+                        print(f"📝 Submitted step: {submitted_step}, stored step was: {progress.current_step}")
+                        # Set current_step to the submitted step (trust the frontend)
+                        progress.current_step = submitted_step
 
                 # Save any question responses
                 responses = request.data.get("question_responses", {})
@@ -210,8 +221,9 @@ class ActivityProgressViewSet(GenericViewSet):
 
                 # Advance to next step (max 4)
                 if progress.current_step < 4:
+                    old_step = progress.current_step
                     progress.current_step += 1
-                    print(f"✅ Advancing from step {progress.current_step - 1} to step {progress.current_step}")
+                    print(f"✅ Advancing from step {old_step} to step {progress.current_step}")
 
                 progress.save()
 
@@ -224,6 +236,11 @@ class ActivityProgressViewSet(GenericViewSet):
             return Response(
                 {"error": "Activity progress not found"},
                 status=status.HTTP_404_NOT_FOUND
+            )
+        except (ValueError, TypeError) as e:
+            return Response(
+                {"error": f"Invalid step value: {e}"},
+                status=status.HTTP_400_BAD_REQUEST
             )
 
     @action(detail=False, methods=["post"])
