@@ -1,7 +1,7 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from .models import Submission, SubmissionAttachment, Grade
+from .models import Submission, SubmissionAttachment, Grade, ActivityProgress
 
 
 @admin.register(Submission)
@@ -36,3 +36,27 @@ class GradeAdmin(VersionAdmin):
     )
     # list_filter = ("student_submission", "own_submission", "grader")
     list_filter = ("grader",)
+
+
+@admin.register(ActivityProgress)
+class ActivityProgressAdmin(VersionAdmin):
+    list_display = (
+        "id",
+        "assignment",
+        "current_step",
+        "participant_email",
+        "created_at",
+        "updated_at",
+    )
+    list_filter = ("current_step", "created_at")
+    search_fields = ("participant_email", "assignment__id")
+    readonly_fields = (
+        "activity_logs",
+        "step_completions",
+        "question_responses",
+        "audio_edit_history",
+        "audio_metadata",
+        "created_at",
+        "updated_at",
+    )
+    raw_id_fields = ("assignment",)
