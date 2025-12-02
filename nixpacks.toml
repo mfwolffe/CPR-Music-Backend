@@ -1,0 +1,11 @@
+# Railway/Nixpacks configuration
+
+[variables]
+DJANGO_SETTINGS_MODULE = "config.settings.railway"
+PIP_REQUIREMENTS_FILE = "requirements/railway.txt"
+
+[phases.setup]
+nixPkgs = ["python311"]
+
+[phases.install]
+cmds = ["pip install -r requirements/railway.txt"]

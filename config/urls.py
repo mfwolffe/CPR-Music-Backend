@@ -27,7 +27,13 @@ urlpatterns = [
         name="swagger-ui",
     ),
     path("dashboards/", include("teleband.dashboards.urls", namespace="dashboards")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+# Serve media files - in production with S3 this is handled by S3,
+# but for Railway/local deployments we serve from filesystem
+if settings.DEBUG or not hasattr(settings, 'DEFAULT_FILE_STORAGE') or 'S3' not in getattr(settings, 'DEFAULT_FILE_STORAGE', ''):
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 if settings.DEBUG:
     # Static file serving when using Gunicorn + Uvicorn for local web socket development
     urlpatterns += staticfiles_urlpatterns()

@@ -1,0 +1,19 @@
+# Railway deployment requirements
+# Simplified production without AWS dependencies
+
+-r base.txt
+
+# Web server
+gunicorn==22.0.0
+
+# Database (Railway provides Postgres, or use SQLite)
+psycopg2-binary==2.9.9
+
+# Static files
+whitenoise==6.7.0
+
+# Note: The following are NOT included (vs production.txt):
+# - boto3 (S3)
+# - django-storages (S3)
+# - django-anymail (SES email)
+# - Collectfast (S3 optimization)
