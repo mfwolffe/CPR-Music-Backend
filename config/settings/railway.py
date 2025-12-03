@@ -70,10 +70,10 @@ STATIC_ROOT = ROOT_DIR / "staticfiles"
 
 # MEDIA FILES (local filesystem)
 # ------------------------------------------------------------------------------
-# Media files stored in teleband/media (committed to git for sample audio)
-# User recordings also go here - won't persist across deploys but fine for testing
+# Media files stored in Railway volume at /app/mediafiles
+# Sample audio copied from git on first deploy, user recordings persist in volume
 MEDIA_URL = "/media/"
-MEDIA_ROOT = env("MEDIA_ROOT", default=str(ROOT_DIR / "teleband" / "media"))
+MEDIA_ROOT = env("MEDIA_ROOT", default="/app/mediafiles")
 
 # EMAIL
 # ------------------------------------------------------------------------------
