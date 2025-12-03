@@ -70,12 +70,10 @@ STATIC_ROOT = ROOT_DIR / "staticfiles"
 
 # MEDIA FILES (local filesystem)
 # ------------------------------------------------------------------------------
-# Media files stored locally - Railway provides persistent storage with volumes
+# Media files stored in teleband/media (committed to git for sample audio)
+# User recordings also go here - won't persist across deploys but fine for testing
 MEDIA_URL = "/media/"
-MEDIA_ROOT = env("MEDIA_ROOT", default=str(ROOT_DIR / "mediafiles"))
-
-# Create media directory if it doesn't exist
-os.makedirs(MEDIA_ROOT, exist_ok=True)
+MEDIA_ROOT = env("MEDIA_ROOT", default=str(ROOT_DIR / "teleband" / "media"))
 
 # EMAIL
 # ------------------------------------------------------------------------------
