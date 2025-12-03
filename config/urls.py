@@ -2,9 +2,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
+from django.views.static import serve
 from teleband.users.api.views import obtain_delete_auth_token
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
@@ -31,8 +32,11 @@ urlpatterns = [
 
 # Serve media files - in production with S3 this is handled by S3,
 # but for Railway/local deployments we serve from filesystem
-if settings.DEBUG or not hasattr(settings, 'DEFAULT_FILE_STORAGE') or 'S3' not in getattr(settings, 'DEFAULT_FILE_STORAGE', ''):
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Note: static() only works with DEBUG=True, so we use serve() directly for non-S3 deployments
+if not hasattr(settings, 'DEFAULT_FILE_STORAGE') or 'S3' not in getattr(settings, 'DEFAULT_FILE_STORAGE', ''):
+    urlpatterns += [
+        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    ]
 
 if settings.DEBUG:
     # Static file serving when using Gunicorn + Uvicorn for local web socket development
