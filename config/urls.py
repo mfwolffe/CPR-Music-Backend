@@ -1,3 +1,4 @@
+import os
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -6,11 +7,45 @@ from django.urls import include, path, re_path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from django.views.static import serve
+from django.http import JsonResponse
 from teleband.users.api.views import obtain_delete_auth_token
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
+
+def debug_media(request):
+    """Diagnostic endpoint to check media files."""
+    import subprocess
+    result = {
+        "MEDIA_ROOT": str(settings.MEDIA_ROOT),
+        "MEDIA_ROOT_exists": os.path.exists(settings.MEDIA_ROOT),
+        "cwd": os.getcwd(),
+    }
+
+    # List files in MEDIA_ROOT
+    if os.path.exists(settings.MEDIA_ROOT):
+        try:
+            files = []
+            for root, dirs, filenames in os.walk(settings.MEDIA_ROOT):
+                for f in filenames[:20]:  # Limit to first 20
+                    files.append(os.path.join(root, f).replace(settings.MEDIA_ROOT, ""))
+            result["files"] = files
+            result["file_count"] = sum(len(f) for _, _, f in os.walk(settings.MEDIA_ROOT))
+        except Exception as e:
+            result["error"] = str(e)
+    else:
+        result["files"] = []
+
+    # Also check teleband/media
+    teleband_media = os.path.join(os.getcwd(), "teleband", "media")
+    result["teleband_media_exists"] = os.path.exists(teleband_media)
+    if os.path.exists(teleband_media):
+        result["teleband_media_count"] = sum(len(f) for _, _, f in os.walk(teleband_media))
+
+    return JsonResponse(result)
+
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    path("debug-media/", debug_media, name="debug-media"),
     path(
         "about/", TemplateView.as_view(template_name="pages/about.html"), name="about"
     ),
