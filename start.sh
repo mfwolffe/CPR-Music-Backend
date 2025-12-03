@@ -2,16 +2,16 @@
 set -e
 
 echo "=== Starting deployment ==="
-echo "Current directory: $(pwd)"
-echo "Listing teleband/media:"
-ls -la teleband/media/ || echo "teleband/media not found"
 
-echo "=== Copying media files to volume ==="
-mkdir -p /app/mediafiles
-cp -rv teleband/media/* /app/mediafiles/ || echo "Copy failed or no files"
-
-echo "=== Media files in volume ==="
-ls -la /app/mediafiles/ || echo "Volume empty"
+# Copy media files to volume if source exists and volume is empty
+# (Only needed on first deploy or if volume is recreated)
+if [ -d "teleband/media" ] && [ ! -f "/app/mediafiles/.seeded" ]; then
+    echo "=== Seeding media files to volume ==="
+    mkdir -p /app/mediafiles
+    cp -rv teleband/media/* /app/mediafiles/ || echo "Copy failed"
+    touch /app/mediafiles/.seeded
+    echo "=== Media files seeded ==="
+fi
 
 echo "=== Running migrations ==="
 python manage.py migrate --noinput
