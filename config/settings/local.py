@@ -14,7 +14,16 @@ DATABASES = {
     "default": env.db("DATABASE_URL", default="sqlite:///db.sqlite"),
 }
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "0.0.0.0", "127.0.0.1", "dev-api.musiccpr.org", "api.musiccpr.org"])
+ALLOWED_HOSTS = env.list(
+    "ALLOWED_HOSTS",
+    default=[
+        "localhost",
+        "0.0.0.0",
+        "127.0.0.1",
+        "dev-api.musiccpr.org",
+        "api.musiccpr.org",
+    ],
+)
 
 # CACHES
 # ------------------------------------------------------------------------------
