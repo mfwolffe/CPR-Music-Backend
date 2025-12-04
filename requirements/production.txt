@@ -4,7 +4,7 @@
 
 wheel==0.43.0 # https://idk
 gunicorn==22.0.0 # https://github.com/benoitc/gunicorn
-psycopg2-binary==2.9.9 # https://github.com/psycopg/psycopg2
+psycopg[binary]>=3.0.0 # https://github.com/psycopg/psycopg
 Collectfast==2.2.0 # https://github.com/antonagestam/collectfast
 
 boto3==1.34.145
