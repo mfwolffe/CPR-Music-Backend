@@ -46,6 +46,8 @@ DATABASES = {
     "default": env.db("DATABASE_URL", default="postgres:///teleband"),
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
+DATABASES["default"]["OPTIONS"] = {"pool": True}
+
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
